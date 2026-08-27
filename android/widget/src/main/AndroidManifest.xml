@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <uses-permission android:name="android.permission.INTERNET" />
+    <application>
+        <activity
+            android:name=".AvatarWidgetActivity"
+            android:exported="false"
+            android:theme="@style/Theme.AvatarWidget.Chat"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize|uiMode"
+            android:windowSoftInputMode="adjustNothing" />
+    </application>
+</manifest>
