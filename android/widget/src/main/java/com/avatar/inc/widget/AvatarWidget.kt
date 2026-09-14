@@ -39,10 +39,15 @@ object AvatarWidget {
         this.publishableKey = publishableKey.trim()
     }
 
-    /** Beta — stores the HMAC identity payload and forwards it to the panel when presented. */
+    /** Beta — stores the HMAC identity payload and forwards it to the panel when presented.
+     *  Re-sends only when `userId` or `hmac` differs from the last stored token (HMAC refresh). */
     @JvmStatic
     fun identify(userId: String, hmac: String) {
+        val changed = identity?.let { it.first != userId || it.second != hmac } ?: true
         identity = userId to hmac
+        if (changed) {
+            AvatarWidgetActivity.instance?.allowIdentifyResend()
+        }
         AvatarWidgetActivity.instance?.sendIdentifyIfNeeded()
     }
 

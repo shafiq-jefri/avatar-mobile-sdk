@@ -137,6 +137,10 @@ class AvatarWidgetActivity : AppCompatActivity() {
         super.onDestroy()
     }
 
+    internal fun allowIdentifyResend() {
+        didSendIdentify = false
+    }
+
     internal fun sendIdentifyIfNeeded() {
         val identity = AvatarWidget.identity ?: return
         if (didSendIdentify) return

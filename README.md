@@ -11,11 +11,11 @@ Customers never pass a panel URL — the host is baked into each release artifac
 
 Public API (both platforms): `configure` · `identify` · `present` · `shutdown` · `events`
 
+Current release: **`0.2.0-uat`**
+
 ---
 
 ## iOS (Swift Package Manager)
-
-### Install
 
 In Xcode: **File → Add Package Dependencies…**
 
@@ -23,67 +23,75 @@ In Xcode: **File → Add Package Dependencies…**
 https://github.com/shafiq-jefri/avatar-mobile-sdk
 ```
 
+Pick version **`0.2.0-uat`** (UAT panel host).
+
 Or in `Package.swift`:
 
 ```swift
-.package(url: "https://github.com/shafiq-jefri/avatar-mobile-sdk", from: "0.1.0")
+.package(url: "https://github.com/shafiq-jefri/avatar-mobile-sdk", exact: "0.2.0-uat")
 ```
-
-### UAT vs Production
-
-| Environment | How |
-|---|---|
-| **UAT** (default) | Resolve the package normally — panel host is UAT |
-| **Production** | Resolve with `AVATAR_WIDGET_ENV=production` at package resolve / CI time, or use a production release tag published by Avatar |
-
-### Usage
 
 ```swift
 import AvatarWidget
-import UIKit
 
-// App launch — once
 AvatarWidget.configure(publishableKey: "pk_live_xxxxxxxx")
-
-// Open chat
+AvatarWidget.identify(userId: "usr_123", hmac: token) // when identity_verification is enabled
 AvatarWidget.present(from: UIApplication.shared.topController!)
-
-// Optional (Beta) — bind authenticated user
-AvatarWidget.identify(userId: "usr_123", hmac: token)
-
-// Tear down
-AvatarWidget.shutdown()
 ```
+
+Default resolve (no `AVATAR_WIDGET_ENV`) uses the UAT panel. Production builds set `AVATAR_WIDGET_ENV=production` at package resolve / CI, or use a production tag.
 
 ---
 
-## Android (Gradle / Maven)
+## Android (Maven)
 
-Until Maven Central publishing is live, include this repo as a composite build or copy the `android/widget` module.
+UAT artifact: `com.avatar.inc:widget-uat:0.2.0`  
+Production artifact: `com.avatar.inc:widget:0.2.0` (published on production tags only)
 
-### Flavor
-
-| Flavor | Artifact (planned Maven) | Panel host |
-|---|---|---|
-| `uat` | `com.avatar.inc:widget-uat` | UAT |
-| `production` | `com.avatar.inc:widget` | Production |
-
-### Usage
+Until Maven Central is live, the AAR is on **GitHub Packages**:
 
 ```kotlin
-// Application.onCreate — once
-AvatarWidget.configure(context = this, publishableKey = "pk_live_xxxxxxxx")
-
-// Open chat
-AvatarWidget.present(activity = this)
-
-// Optional (Beta)
-AvatarWidget.identify(userId = "usr_123", hmac = token)
-
-AvatarWidget.shutdown()
+// settings.gradle.kts
+dependencyResolutionManagement {
+    repositories {
+        google()
+        mavenCentral()
+        maven {
+            url = uri("https://maven.pkg.github.com/shafiq-jefri/avatar-mobile-sdk")
+            credentials {
+                username = providers.gradleProperty("gpr.user").orNull
+                    ?: System.getenv("GITHUB_ACTOR")
+                password = providers.gradleProperty("gpr.key").orNull
+                    ?: System.getenv("GITHUB_TOKEN")
+            }
+        }
+    }
+}
 ```
 
-Your app’s `applicationId` / package name must be on the avatar’s `mobile_bundles` allowlist.
+```kotlin
+// app/build.gradle.kts
+dependencies {
+    implementation("com.avatar.inc:widget-uat:0.2.0")
+}
+```
+
+GitHub Packages needs a token (`read:packages`) in `~/.gradle/gradle.properties`:
+
+```
+gpr.user=YOUR_GITHUB_USERNAME
+gpr.key=YOUR_GITHUB_PAT
+```
+
+```kotlin
+AvatarWidget.configure(context = this, publishableKey = "pk_live_xxxxxxxx")
+AvatarWidget.identify(userId = "usr_123", hmac = token)
+AvatarWidget.present(activity = this)
+```
+
+Your app’s `applicationId` must be on the avatar’s `mobile_bundles` allowlist.
+
+Dogfood without Maven: clone this repo next to the sample and include `:widget` (see `avatar-sdk-platform/samples/android`).
 
 ---
 
@@ -109,5 +117,7 @@ android/                      # Android Gradle project
 
 ## Versioning
 
-- Tags like `0.1.0` / `1.0.0` — SPM / release markers
-- Prefer UAT tags for dogfood; promote the same commit to production after panel + gateway are ready
+| Tag | SPM | Android Maven |
+|---|---|---|
+| `0.2.0-uat` | UAT panel | publishes `widget-uat` |
+| `0.2.0` | production resolve | publishes `widget` + `widget-uat` |

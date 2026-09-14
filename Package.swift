@@ -3,7 +3,8 @@ import PackageDescription
 
 // Panel host is selected at package resolve / CI publish time:
 //   unset or anything except "production" → UAT (https://widget-uat.myegdev2.com)
-//   AVATAR_WIDGET_ENV=production           → production (https://avatar.inc)
+//   AVATAR_WIDGET_ENV=production           → production (https://widget.avatar.inc)
+// Matches src-panel/.env.uat and .env.production VITE_PANEL_ORIGIN.
 let isProduction = Context.environment["AVATAR_WIDGET_ENV"] == "production"
 
 let package = Package(

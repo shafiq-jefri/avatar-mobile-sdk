@@ -79,6 +79,10 @@ final class AvatarWidgetViewController: UIViewController, WKNavigationDelegate, 
         return components.url
     }
 
+    func allowIdentifyResend() {
+        didSendIdentify = false
+    }
+
     func sendIdentifyIfNeeded() {
         guard let identity = AvatarWidget.identity, !didSendIdentify else { return }
         postToPanel(event: "WIDGET_IDENTIFY", payload: [

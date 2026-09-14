@@ -28,8 +28,13 @@ public enum AvatarWidget {
     }
 
     /// Beta — stores the HMAC identity payload and forwards it to the panel when presented.
+    /// Re-sends only when `userId` or `hmac` differs from the last stored token (HMAC refresh).
     public static func identify(userId: String, hmac: String) {
+        let changed = identity.map { $0.userId != userId || $0.hmac != hmac } ?? true
         identity = (userId, hmac)
+        if changed {
+            presented?.allowIdentifyResend()
+        }
         presented?.sendIdentifyIfNeeded()
     }
 

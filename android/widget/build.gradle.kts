@@ -61,14 +61,26 @@ afterEvaluate {
             create<MavenPublication>("uatRelease") {
                 groupId = "com.avatar.inc"
                 artifactId = "widget-uat"
-                version = project.findProperty("VERSION_NAME") as String? ?: "0.1.0"
+                version = project.findProperty("VERSION_NAME") as String? ?: "0.2.0"
                 from(components["uatRelease"])
             }
             create<MavenPublication>("productionRelease") {
                 groupId = "com.avatar.inc"
                 artifactId = "widget"
-                version = project.findProperty("VERSION_NAME") as String? ?: "0.1.0"
+                version = project.findProperty("VERSION_NAME") as String? ?: "0.2.0"
                 from(components["productionRelease"])
+            }
+        }
+        repositories {
+            maven {
+                name = "GitHubPackages"
+                url = uri("https://maven.pkg.github.com/shafiq-jefri/avatar-mobile-sdk")
+                credentials {
+                    username = System.getenv("GITHUB_ACTOR")
+                        ?: (project.findProperty("gpr.user") as String?)
+                    password = System.getenv("GITHUB_TOKEN")
+                        ?: (project.findProperty("gpr.key") as String?)
+                }
             }
         }
     }
