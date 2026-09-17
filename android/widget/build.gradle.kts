@@ -15,7 +15,7 @@ android {
 
     // Two flavors bake the panel origin into BuildConfig so customers never pass a URL.
     // UAT artifact        → PANEL_ORIGIN = "https://widget-uat.myegdev2.com"
-    // Production artifact → PANEL_ORIGIN = "https://avatar.inc"
+    // Production artifact → PANEL_ORIGIN = "https://widget.avatar.inc"
     flavorDimensions += "avatarEnv"
     productFlavors {
         create("uat") {
@@ -31,7 +31,7 @@ android {
             buildConfigField(
                 "String",
                 "PANEL_ORIGIN",
-                "\"https://avatar.inc\"",
+                "\"https://widget.avatar.inc\"",
             )
         }
     }

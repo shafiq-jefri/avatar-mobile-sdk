@@ -5,7 +5,7 @@
 enum PanelHost {
     static var origin: String {
         #if AVATAR_WIDGET_PRODUCTION
-        "https://avatar.inc"
+        "https://widget.avatar.inc"
         #else
         "https://widget-uat.myegdev2.com"
         #endif

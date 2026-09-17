@@ -7,7 +7,7 @@ Customers never pass a panel URL — the host is baked into each release artifac
 | Artifact | Panel host |
 |---|---|
 | UAT | `https://widget-uat.myegdev2.com` |
-| Production | `https://avatar.inc` |
+| Production | `https://widget.avatar.inc` |
 
 Public API (both platforms): `configure` · `identify` · `present` · `shutdown` · `events`
 
@@ -19,11 +19,13 @@ Current release: **`0.2.0-uat`**
 
 In Xcode: **File → Add Package Dependencies…**
 
+> **⚠️ Common mistake:** Xcode has two similar-looking windows — **"Add Package Dependency"** (what you want here) and **"Add Package Collection"** (for a curated JSON list of many packages, not a single repo). If you paste this URL and see *"Received invalid response… Please make sure it is a package collection URL"*, you're in the wrong window. Cancel it, and make sure the URL goes into the search field of the **Add Package Dependency** window opened via **File → Add Package Dependencies…** — not a "+" / "Add Package Collection" button inside it.
+
 ```
 https://github.com/shafiq-jefri/avatar-mobile-sdk
 ```
 
-Pick version **`0.2.0-uat`** (UAT panel host).
+Set **Dependency Rule** to **Exact Version**, then pick **`0.2.0-uat`** (UAT panel host).
 
 Or in `Package.swift`:
 
