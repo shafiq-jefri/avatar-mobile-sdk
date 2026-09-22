@@ -1,6 +1,10 @@
-# Avatar Mobile SDK
+# Avatar Mobile SDK (iOS)
 
-Thin iOS and Android helper SDKs that present the shared Avatar chat panel in a native WebView.
+Thin iOS helper SDK that presents the shared Avatar chat panel in a native WebView, distributed via Swift Package Manager.
+
+> The Android SDK is maintained separately in `avatar-sdk-platform/sdk/android` and published to
+> `maven.zetrix.com` — see that repo's `docs/ANDROID_SDK_PUBLISHING.md`. It used to also live here
+> under `android/`, but that copy was dropped to avoid two sources of truth drifting apart.
 
 Customers never pass a panel URL — the host is baked into each release artifact.
 
@@ -9,7 +13,7 @@ Customers never pass a panel URL — the host is baked into each release artifac
 | UAT | `https://widget-uat.myegdev2.com` |
 | Production | `https://widget.avatar.inc` |
 
-Public API (both platforms): `configure` · `identify` · `present` · `shutdown` · `events`
+Public API: `configure` · `identify` · `present` · `shutdown` · `events`
 
 Current release: **`0.2.0-uat`**
 
@@ -45,64 +49,11 @@ Default resolve (no `AVATAR_WIDGET_ENV`) uses the UAT panel. Production builds s
 
 ---
 
-## Android (Maven)
-
-UAT artifact: `com.avatar.inc:widget-uat:0.2.0`  
-Production artifact: `com.avatar.inc:widget:0.2.0` (published on production tags only)
-
-Until Maven Central is live, the AAR is on **GitHub Packages**:
-
-```kotlin
-// settings.gradle.kts
-dependencyResolutionManagement {
-    repositories {
-        google()
-        mavenCentral()
-        maven {
-            url = uri("https://maven.pkg.github.com/shafiq-jefri/avatar-mobile-sdk")
-            credentials {
-                username = providers.gradleProperty("gpr.user").orNull
-                    ?: System.getenv("GITHUB_ACTOR")
-                password = providers.gradleProperty("gpr.key").orNull
-                    ?: System.getenv("GITHUB_TOKEN")
-            }
-        }
-    }
-}
-```
-
-```kotlin
-// app/build.gradle.kts
-dependencies {
-    implementation("com.avatar.inc:widget-uat:0.2.0")
-}
-```
-
-GitHub Packages needs a token (`read:packages`) in `~/.gradle/gradle.properties`:
-
-```
-gpr.user=YOUR_GITHUB_USERNAME
-gpr.key=YOUR_GITHUB_PAT
-```
-
-```kotlin
-AvatarWidget.configure(context = this, publishableKey = "pk_live_xxxxxxxx")
-AvatarWidget.identify(userId = "usr_123", hmac = token)
-AvatarWidget.present(activity = this)
-```
-
-Your app’s `applicationId` must be on the avatar’s `mobile_bundles` allowlist.
-
-Dogfood without Maven: clone this repo next to the sample and include `:widget` (see `avatar-sdk-platform/samples/android`).
-
----
-
 ## Requirements
 
 | Platform | Minimum |
 |---|---|
 | iOS | 15.0 · UIKit + WebKit · no third-party deps |
-| Android | API 26 · AndroidX AppCompat · Chromium WebView 90+ |
 
 ---
 
@@ -111,15 +62,13 @@ Dogfood without Maven: clone this repo next to the sample and include `:widget` 
 ```
 Package.swift                 # iOS SPM entry (root)
 Sources/AvatarWidget/         # iOS sources
-android/                      # Android Gradle project
-  widget/                     # library module (uat / production flavors)
 ```
 
 ---
 
 ## Versioning
 
-| Tag | SPM | Android Maven |
-|---|---|---|
-| `0.2.0-uat` | UAT panel | publishes `widget-uat` |
-| `0.2.0` | production resolve | publishes `widget` + `widget-uat` |
+| Tag | SPM |
+|---|---|
+| `0.2.0-uat` | UAT panel |
+| `0.2.0` | production resolve |
